@@ -49,9 +49,9 @@ todo_data = {
 
 #쿼리 파라미터 추가 - 인자로 전달
 @app.get("/todos")
-def get_todos_handler(order:str="") :
+def get_todos_handler(order: str | None = None ):
     ret = list(todo_data.values())
-    if order == "DESC" :
+    if order and order == "DESC" :
         return ret[::-1]
     return ret
 
