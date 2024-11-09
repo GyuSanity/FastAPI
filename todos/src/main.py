@@ -22,22 +22,22 @@ todo_data = {
     1: {
         "id":1,
         "contents":"실전! FastAPI 섹션 0 수강",
-        "is_done": True,
+        "is_done": False,
     },
     2: {
         "id":2,
         "contents":"실전! FastAPI 섹션 0 수강",
-        "is_done": True,
+        "is_done": False,
     },
     3: {
         "id":3,
         "contents":"실전! FastAPI 섹션 0 수강",
-        "is_done": True,
+        "is_done": False,
     },
     4: {
         "id":4,
         "contents":"실전! FastAPI 섹션 0 수강",
-        "is_done": True,
+        "is_done": False,
     },
 }
 
@@ -70,8 +70,6 @@ def get_todo_handler(todo_id: int):
 #### CreateToDoRequest에 맞춰서 채워줌
 #### 단, todo_data[request.id]의 Value는 dict로 선언되어 있어 request 클래스를 전달하면
 ####     type이 다르다고 에러가 남으로 dict()로 변환 필요(BaseModel에서 제공하는 메서드임)
-
-
 from pydantic import BaseModel
 class CreateToDoRequest(BaseModel):
     id : int
@@ -86,3 +84,16 @@ def create_todo_handler(request: CreateToDoRequest):
 
 
 ##PATCH Method - 수정
+#### is_done 값만을 업데이트 할 예정이라 위 post 메서드 처럼 request body를 전체를 전달하지 않고
+#### is_done만 처리할 것이라 fastapi의 Body 모듈을 가져올 거임
+from fastapi import Body
+@app.patch("/todos/{todo_id}")
+def update_todo_handler(
+    todo_id: int,
+    is_done: bool = Body(..., embed=True),
+    ):
+    todo = todo_data.get(todo_id)
+    if todo:
+        todo["is_done"] = is_done
+        return todo
+    return {}
