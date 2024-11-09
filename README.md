@@ -19,7 +19,7 @@ pip install uvicorn #=> fastAPI를 동작 시키기 위해 필요한 라이브�
 ## Uvicorn 실행
 
 #src 경로 이동 후,
-python -m uvicorn main:app --port 8800
+python -m uvicorn main:app --port 8800 --reload
 
 ## 디펜던시 파일 만들기
 
