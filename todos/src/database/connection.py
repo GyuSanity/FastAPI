@@ -15,7 +15,6 @@ SessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=engine) #�
 # (todos) gyyeon@DESKTOP-A9M7R8S:~/Git/FastAPI/todos/src$ python
 # >>> from database.connection import SessionFactory
 # >>> session = SessionFactory()
-# >>> from sqlarchemy import select 
 # >>> from sqlalchemy import select 
 # >>> #태스트 동작 확인 
 # >>> session.scalar(select(1))                                                             
@@ -28,3 +27,14 @@ SessionFactory = sessionmaker(autocommit=False, autoflush=False, bind=engine) #�
 # 2024-11-10 12:59:07,831 INFO sqlalchemy.engine.Engine BEGIN (implicit)
 # 2024-11-10 12:59:07,832 INFO sqlalchemy.engine.Engine SELECT 1
 # 2024-11-10 12:59:07,832 INFO sqlalchemy.engine.Engine [generated in 0.00013s] {}
+
+## FastAPI에서 사용을 하기 위해 제너레이터 등록
+## fastAPI 요청이 들어올 경우 세션을 생성하여 yield를 돌다가,
+## 끝난 후에는 finally로 해당 세션을 fastAPI에서 자동으로 닫아줌
+def get_db():
+    session = SessionFactory()
+    try:
+        yield session
+    finally:
+        session.close()
+    

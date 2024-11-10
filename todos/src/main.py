@@ -47,12 +47,30 @@ def get_todos_handler() :
 
 ## GET Method - 전체 조회, 쿼리 파라미터 추가
 ## ex. localhost:8800/todos?order=DESC
+from fastapi import Depends
+from database.connection import get_db
+from sqlalchemy.orm import Session
+from database.repository import get_todos
+from typing import List
+from database.orm import Todo
+
 @app.get("/todos")
-def get_todos_handler(order: str| None = None):
-    ret = list(todo_data.values())
-    if order and order == "DESC" :
-        return ret[::-1]
-    return ret
+def get_todos_handler(
+    order: str| None = None,
+    session: Session = Depends(get_db),
+    
+):
+    todos:List[Todo] = get_todos(session=session)
+    if order and order == "DESC":
+        return todos[::-1]
+    return todos
+
+    # ret = list(todo_data.values())
+    # if order and order == "DESC" :
+    #     return ret[::-1]
+    # return ret
+    
+    
 
 
 ## GET API - 단일 조회 (중괄호 사이 변수 = path로 이용 가능)
