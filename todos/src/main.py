@@ -41,7 +41,7 @@ todo_data = {
     },
 }
 
-@app.get("/todos")
+@app.get("/todos", status_code=200)
 def get_todos_handler() :
     return list(todo_data.values()) ## List 형태로 묶어줘야 에러가 없음
 
@@ -57,9 +57,13 @@ def get_todos_handler(order: str| None = None):
 
 ## GET API - 단일 조회 (중괄호 사이 변수 = path로 이용 가능)
 ## ex. localhost:8800/todos/2
-@app.get("/todos/{todo_id}")
+from fastapi import HTTPException
+@app.get("/todos/{todo_id}", status_code=200)
 def get_todo_handler(todo_id: int):
-    return todo_data.get(todo_id, {})
+    todo = todo_data.get(todo_id, {})
+    if todo :
+        return todo        
+    raise HTTPException(status_code=404, detail="ToDo Not Found")
 
 ## POST Method : post 생성
 ## 사용자로 부터 데이터(request body)를 받아야하는데,
@@ -77,17 +81,17 @@ class CreateToDoRequest(BaseModel):
     is_done:bool
 
 
-@app.post("/todos")
+@app.post("/todos", status_code=201)
 def create_todo_handler(request: CreateToDoRequest):
     todo_data[request.id] = request.dict()
     return todo_data[request.id]
 
 
-##PATCH Method - 수정
+## PATCH Method - 수정
 #### is_done 값만을 업데이트 할 예정이라 위 post 메서드 처럼 request body를 전체를 전달하지 않고
 #### is_done만 처리할 것이라 fastapi의 Body 모듈을 가져올 거임
 from fastapi import Body
-@app.patch("/todos/{todo_id}")
+@app.patch("/todos/{todo_id}", status_code=200)
 def update_todo_handler(
     todo_id: int,
     is_done: bool = Body(..., embed=True),
@@ -96,4 +100,14 @@ def update_todo_handler(
     if todo:
         todo["is_done"] = is_done
         return todo
-    return {}
+    raise HTTPException(status_code=404, detail="Todo Not Found")
+
+
+## Delete Method - 삭제
+@app.delete("/todos/{todo_id}", status_code="204")
+def delete_todo_handler(todo_id: int):
+    todo = todo_data.pop(todo_id, None)
+    if todo :
+        return
+    
+    raise HTTPException(404, "Not Found")

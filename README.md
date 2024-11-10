@@ -31,3 +31,32 @@ pip freeze > requirements.txt
 ## 디펜던시 파일로 프로젝트 필요 프로그램 다운로드 받기
 
 pip install -r requirements.txt
+
+---
+
+## MySQL 도커 이미지로 실행
+
+```bash
+# Docker 명령어
+docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=todos -e MYSQL_DATABASE=todos -d -v todos:/db --name todos mysql:8.0
+docker ps
+docker logs todos
+docker volume ls
+
+# MySQL 접속
+docker exec -it todos bash
+mysql -u root -p
+
+# SQL
+SHOW databases;
+USE todos;
+CREATE TABLE todo(
+id INT NOT NULL AUTO_INCREMENT,
+contents VARCHAR(256) NOT NULL,
+is_done BOOLEAN NOT NULL,
+PRIMARY KEY (id)
+);
+
+INSERT INTO todo (contents, is_done) VALUES ("FastAPI Section 0", true);
+SELECT \* FROM todo;
+```
