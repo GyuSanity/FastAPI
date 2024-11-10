@@ -37,13 +37,18 @@ pip install -r requirements.txt
 ## MySQL 도커 이미지로 실행
 
 ```bash
+# sqlalchemy 설치
+pip install sqlalchemy <- mysql python
+pip install pymysql <- python 과 mysql 연동할떄 쓰는 드라이버
+pip install cryptography <- pymysql로 접속 시 인증이나 암호관련 처리
+
 # Docker 명령어
 docker run -p 3306:3306 -e MYSQL_ROOT_PASSWORD=todos -e MYSQL_DATABASE=todos -d -v todos:/db --name todos mysql:8.0
 docker ps
 docker logs todos
 docker volume ls
 
-# MySQL 접속
+# MySQL 접속 후 데이터를 저장하기 위한 테이블 생성 실습
 docker exec -it todos bash
 mysql -u root -p
 
@@ -58,5 +63,5 @@ PRIMARY KEY (id)
 );
 
 INSERT INTO todo (contents, is_done) VALUES ("FastAPI Section 0", true);
-SELECT \* FROM todo;
+SELECT * FROM todo;
 ```
