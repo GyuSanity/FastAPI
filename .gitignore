@@ -1,0 +1,6 @@
+#        modified:   todos/src/__pycache__/main.cpython-310.pyc
+#        modified:   todos/src/database/__pycache__/orm.cpython-310.pyc
+#        modified:   todos/src/main.py
+src/__pycache__
+src/database
+src/scheme/__pycache__
